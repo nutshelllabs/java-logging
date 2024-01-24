@@ -42,6 +42,7 @@ public class MonitoredResourceUtil {
     FunctionName("function_name"),
     InstanceId("instance_id"),
     InstanceName("instance_name"),
+    JobName("job_name"),
     CloudRunLocation("location"),
     GKELocation("location"),
     ModuleId("module_id"),
@@ -67,6 +68,7 @@ public class MonitoredResourceUtil {
 
   private enum Resource {
     CLOUD_RUN("cloud_run_revision"),
+    CLOUD_RUN_JOB("cloud_run_job"),
     CLOUD_FUNCTION("cloud_function"),
     APP_ENGINE("gae_app"),
     GCE_INSTANCE("gce_instance"),
@@ -93,6 +95,9 @@ public class MonitoredResourceUtil {
               Label.ServiceName,
               Label.CloudRunLocation,
               Label.ConfigurationName)
+          .putAll(Resource.CLOUD_RUN_JOB.getKey(),
+              Label.JobName,
+              Label.CloudRunLocation)
           .putAll(
               Resource.APP_ENGINE.getKey(), Label.ModuleId, Label.VersionId, Label.Zone, Label.Env)
           .putAll(Resource.GCE_INSTANCE.getKey(), Label.InstanceId, Label.Zone)
@@ -176,6 +181,9 @@ public class MonitoredResourceUtil {
         && getter.getEnv("K_REVISION") != null
         && getter.getEnv("K_CONFIGURATION") != null) {
       return Resource.CLOUD_RUN;
+    }
+    if (getter.getEnv("CLOUD_RUN_JOB") != null) {
+      return Resource.CLOUD_RUN_JOB;
     }
     if (getter.getEnv("GAE_INSTANCE") != null
         && getter.getEnv("GAE_SERVICE") != null

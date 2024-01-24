@@ -40,6 +40,7 @@ public final class MetadataLoader {
           .put(Label.FunctionName, this::getFunctionName)
           .put(Label.InstanceId, this::getInstanceId)
           .put(Label.InstanceName, this::getInstanceName)
+          .put(Label.JobName, this::getCloudRunJobName)
           .put(Label.CloudRunLocation, this::getCloudRunLocation)
           .put(Label.GKELocation, this::getGKELocation)
           .put(Label.ModuleId, this::getModuleId)
@@ -180,6 +181,10 @@ public final class MetadataLoader {
       return loc.substring(loc.lastIndexOf('/') + 1);
     }
     return null;
+  }
+
+  private String getCloudRunJobName() {
+    return getter.getEnv("CLOUD_RUN_JOB");
   }
 
   private String getRevisionName() {
